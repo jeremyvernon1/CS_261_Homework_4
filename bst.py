@@ -1,7 +1,7 @@
 # Course: CS261 - Data Structures
-# Student Name:
-# Assignment:
-# Description:
+# Student Name: Jeremy Vernon
+# Assignment: 4
+# Description: BST
 
 
 class Stack:
