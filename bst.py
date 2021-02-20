@@ -128,21 +128,46 @@ class BST:
 
     def add(self, value: object) -> None:
         """
-        TODO: Write this implementation
+        Adds a new value to the BST
         """
-        pass
+        # establishes root node
+        if self.root is None:
+            self.root = TreeNode(value)
+            return
+        # finds position and inserts new node
+        current = self.root
+        while current is not None:
+            # left
+            if value < current.value:
+                if current.left is None:
+                    current.left = TreeNode(value)
+                    return
+                current = current.left
+            # right
+            else:
+                if current.right is None:
+                    current.right = TreeNode(value)
+                    return
+                current = current.right
 
     def contains(self, value: object) -> bool:
         """
-        TODO: Write this implementation
+        Searches BST for the given value
         """
-        return True
+        current = self.root
+        while current is not None:
+            if current.value == value:
+                return True
+            elif value < current.value:
+                current = current.left
+            current = current.right
+        return False
 
     def get_first(self) -> object:
         """
-        TODO: Write this implementation
+        Returns the value of the root node
         """
-        return None
+        return self.root
 
     def remove_first(self) -> bool:
         """
@@ -152,9 +177,21 @@ class BST:
 
     def remove(self, value) -> bool:
         """
-        TODO: Write this implementation
+        Removes the first node that matches the given value
+        TODO: Implement remove; Replace deleted node
         """
-        return True
+        remove_current = self.root
+        while remove_current is not None:
+            if remove_current.value == value:
+                # removes the value
+
+                return True
+            # continue down the tree
+            if value < remove_current.value:
+                remove_current = remove_current.left
+            remove_current = remove_current.right
+        # if not found
+        return False
 
     def pre_order_traversal(self) -> Queue:
         """
