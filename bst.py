@@ -171,25 +171,105 @@ class BST:
 
     def remove_first(self) -> bool:
         """
-        TODO: Write this implementation
+        Removes the root element, and replaces it if there is a child
         """
-        return True
+        if self.root is None:
+            return False
+        # if no children
+        if self.root.left is None and self.root.right is None:
+            self.root = None
+            return True
+        parent = self.root
+        # if left child, but no right children
+        if self.root.right is None:
+            self.root = self.root.left
+            return True
+        # if no left child or if both left and right children
+        else:
+            child = self.root.right
+            # if grandchildren
+            if child.left is not None and child.left.left is not None:
+                while child.left is not None:
+                    parent = child
+                    child = child.left
+                parent.left = child.right
+                child.right = self.root.right
+            # if no left branch
+            if self.root.left is not None:
+                child.left = self.root.left
+            self.root = child
+            return True
 
     def remove(self, value) -> bool:
         """
         Removes the first node that matches the given value
-        TODO: Implement remove; Replace deleted node
         """
-        remove_current = self.root
-        while remove_current is not None:
-            if remove_current.value == value:
-                # removes the value
-
+        above_remove = self.root
+        while above_remove is not None:
+            # if left child is value to remove
+            if above_remove.left is not None and above_remove.left.value == value:
+                element_to_remove = above_remove.left
+                # if child to remove has no children
+                if element_to_remove.left is None and element_to_remove.right is None:
+                    above_remove.left = None
+                # if child to remove has right child, but no left
+                elif element_to_remove.left is None:
+                    above_remove.left = element_to_remove.right
+                # if child to remove has left child, but no right
+                elif element_to_remove.right is None:
+                    above_remove.left = element_to_remove.left
+                # if child to remove has both left child and right child
+                else:
+                    # if grandchildren
+                    if element_to_remove.left.right is not None:
+                        grandchild = element_to_remove.left.right
+                        while grandchild.right is not None:
+                            grandchild = grandchild.right
+                        element_to_remove.left.right = grandchild.left
+                        grandchild.right = element_to_remove.right
+                        grandchild.left = element_to_remove.left
+                        above_remove.left = grandchild
+                    else:
+                        element_to_remove.right.left = element_to_remove.left
+                        above_remove.left = element_to_remove.right
                 return True
+
+            # if right child is value to remove
+            elif above_remove.right is not None and above_remove.right.value == value:
+                element_to_remove = above_remove.right
+                # if child to remove has no children
+                if element_to_remove.left is None and element_to_remove.right is None:
+                    above_remove.right = None
+                # if child to remove has right child, but no left
+                elif element_to_remove.left is None:
+                    above_remove.right = element_to_remove.right
+                # if child to remove has left child, but no right
+                elif element_to_remove.right is None:
+                    above_remove.right = element_to_remove.left
+                # if child to remove has both left and right children
+                else:
+                    # if grandchildren:
+                    if element_to_remove.right.left is not None:
+                        grandchild = element_to_remove.right.left
+                        while grandchild.left is not None:
+                            grandchild = grandchild.left
+                        element_to_remove.right.left = grandchild.right
+                        grandchild.left = element_to_remove.left
+                        grandchild.right = element_to_remove.right
+                        above_remove.right = grandchild
+                    else:
+                        element_to_remove.left = element_to_remove.right
+                        above_remove.right = element_to_remove.left
+                return True
+
             # continue down the tree
-            if value < remove_current.value:
-                remove_current = remove_current.left
-            remove_current = remove_current.right
+            if value < above_remove.value:
+                if above_remove.left is None:
+                    return False
+                above_remove = above_remove.left
+            if above_remove.right is None:
+                return False
+            above_remove = above_remove.right
         # if not found
         return False
 
@@ -197,7 +277,25 @@ class BST:
         """
         TODO: Write this implementation
         """
-        return Queue()
+        result_Queue = Queue()
+        if self.root is not None:
+            pre_order_curr = self.root
+            result_Queue.enqueue(pre_order_curr.value)
+            while pre_order_curr.left is not None:
+                result_Queue.enqueue(pre_order_curr.left.value)
+                pre_order_curr = pre_order_curr.left
+
+        # # base case
+        # if not cur:
+        #     return
+        # # store value of current node
+        # values.append(str(cur.value))
+        # # recursive case for left subtree
+        # self._str_helper(cur.left, values)
+        # # recursive case for right subtree
+        # self._str_helper(cur.right, values)
+        #
+        return result_Queue
 
     def in_order_traversal(self) -> Queue:
         """
