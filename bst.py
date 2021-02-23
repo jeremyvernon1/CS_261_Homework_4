@@ -165,9 +165,10 @@ class BST:
                     return False
                 current = current.left
             # value is more than current value
-            elif not current.right:
-                return False
-            current = current.right
+            elif value > current.value:
+                if not current.right:
+                    return False
+                current = current.right
         return False
 
     def get_first(self) -> object:
@@ -182,12 +183,16 @@ class BST:
         """
         Removes the root element, and replaces it if there is a child
         """
+
+        # if empty
         if self.root is None:
             return False
+
         # if no children
         if self.root.left is None and self.root.right is None:
             self.root = None
             return True
+
         parent = self.root
         # if left child, but no right children
         if self.root.right is None:
@@ -197,14 +202,15 @@ class BST:
         else:
             child = self.root.right
             # if grandchildren
-            if child.left is not None and child.left.left is not None:
-                while child.left is not None:
+            if child.left and \
+                    (child.left.left or child.left.right):
+                while child.left:
                     parent = child
                     child = child.left
                 parent.left = child.right
-                child.right = self.root.right
+                child.right = parent
             # if no left branch
-            if self.root.left is not None:
+            if self.root.left:
                 child.left = self.root.left
             self.root = child
             return True
@@ -214,9 +220,9 @@ class BST:
         Removes the first node that matches the given value
         """
         above_remove = self.root
-        while above_remove is not None:
+        while above_remove:
             # if left child is value to remove
-            if above_remove.left is not None and above_remove.left.value == value:
+            if above_remove.left and above_remove.left.value == value:
                 element_to_remove = above_remove.left
                 # if child to remove has no children
                 if element_to_remove.left is None and element_to_remove.right is None:
@@ -230,9 +236,9 @@ class BST:
                 # if child to remove has both left child and right child
                 else:
                     # if grandchildren
-                    if element_to_remove.left.right is not None:
+                    if element_to_remove.left.right:
                         grandchild = element_to_remove.left.right
-                        while grandchild.right is not None:
+                        while grandchild.right:
                             grandchild = grandchild.right
                         element_to_remove.left.right = grandchild.left
                         grandchild.right = element_to_remove.right
@@ -244,7 +250,7 @@ class BST:
                 return True
 
             # if right child is value to remove
-            elif above_remove.right is not None and above_remove.right.value == value:
+            elif above_remove.right and above_remove.right.value == value:
                 element_to_remove = above_remove.right
                 # if child to remove has no children
                 if element_to_remove.left is None and element_to_remove.right is None:
@@ -258,9 +264,9 @@ class BST:
                 # if child to remove has both left and right children
                 else:
                     # if grandchildren:
-                    if element_to_remove.right.left is not None:
+                    if element_to_remove.right.left:
                         grandchild = element_to_remove.right.left
-                        while grandchild.left is not None:
+                        while grandchild.left:
                             grandchild = grandchild.left
                         element_to_remove.right.left = grandchild.right
                         grandchild.left = element_to_remove.left
@@ -276,9 +282,10 @@ class BST:
                 if above_remove.left is None:
                     return False
                 above_remove = above_remove.left
-            if above_remove.right is None:
-                return False
-            above_remove = above_remove.right
+            else:
+                if above_remove.right is None:
+                    return False
+                above_remove = above_remove.right
         # if not found
         return False
 
