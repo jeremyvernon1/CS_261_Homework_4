@@ -155,11 +155,18 @@ class BST:
         Searches BST for the given value
         """
         current = self.root
-        while current is not None:
+        while current:
+            # if value is found
             if current.value == value:
                 return True
+            # value is less than current value
             elif value < current.value:
+                if not current.left:
+                    return False
                 current = current.left
+            # value is more than current value
+            elif not current.right:
+                return False
             current = current.right
         return False
 
@@ -335,8 +342,33 @@ class BST:
         Adds each node to the queue in the order that it is visited
         """
         by_level_order_result_Queue = Queue()
-        if self.root:
-            pass
+
+        def by_level_helper1(root, level):
+
+            # base case
+            if root is None:
+                return False
+
+            if level == 1:
+                by_level_order_result_Queue.enqueue(root)
+                # return true if at least one node is present at a given level
+                return True
+
+            left = by_level_helper1(root.left, level - 1)
+            right = by_level_helper1(root.right, level - 1)
+
+            return left or right
+
+        def by_level_helper2(root):
+            # start from level 1 —— till the height of the tree
+            level = 1
+
+            # run till helper1() returns false
+            while by_level_helper1(root, level):
+                level = level + 1
+
+        by_level_helper2(self.root)
+
         return by_level_order_result_Queue
 
     def is_full(self) -> bool:
@@ -359,9 +391,17 @@ class BST:
 
     def size(self) -> int:
         """
-        TODO: Write this implementation
+        Finds the number of nodes in a tree.
         """
-        return 0
+        def size_helper(node=self.root):
+            if node is None:
+                return 0
+            else:
+                return (size_helper(node.left) + 1 + size_helper(node.right))
+            return size
+
+        size = size_helper()
+        return size
 
     def height(self) -> int:
         """
