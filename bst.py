@@ -167,7 +167,9 @@ class BST:
         """
         Returns the value of the root node
         """
-        return self.root
+        if self.root is None:
+            return None
+        return self.root.value
 
     def remove_first(self) -> bool:
         """
@@ -275,45 +277,67 @@ class BST:
 
     def pre_order_traversal(self) -> Queue:
         """
-        TODO: Write this implementation
+        Traverses the tree in Root, Left, Right order
+        Adds each node to the queue in the order that it is visited
         """
-        result_Queue = Queue()
-        if self.root is not None:
-            pre_order_curr = self.root
-            result_Queue.enqueue(pre_order_curr.value)
-            while pre_order_curr.left is not None:
-                result_Queue.enqueue(pre_order_curr.left.value)
-                pre_order_curr = pre_order_curr.left
+        pre_order_result_Queue = Queue()
+        if self.root:
 
-        # # base case
-        # if not cur:
-        #     return
-        # # store value of current node
-        # values.append(str(cur.value))
-        # # recursive case for left subtree
-        # self._str_helper(cur.left, values)
-        # # recursive case for right subtree
-        # self._str_helper(cur.right, values)
-        #
-        return result_Queue
+            def pre_order_helper(root):
+                if root:
+                    pre_order_result_Queue.enqueue(root)
+                    pre_order_helper(root.left)
+                    pre_order_helper(root.right)
+
+            pre_order_helper(self.root)
+
+        return pre_order_result_Queue
 
     def in_order_traversal(self) -> Queue:
         """
-        TODO: Write this implementation
+        Traverses the tree in Left, Root, Right order
+        Adds each node to the queue in the order that it is visited
         """
-        return Queue()
+        in_order_result_Queue = Queue()
+        if self.root:
+
+            def in_order_helper(root):
+                if root:
+                    in_order_helper(root.left)
+                    in_order_result_Queue.enqueue(root)
+                    in_order_helper(root.right)
+
+            in_order_helper(self.root)
+
+        return in_order_result_Queue
 
     def post_order_traversal(self) -> Queue:
         """
-        TODO: Write this implementation
+        Traverses the tree in Left, Right, Root order
+        Adds each node to the queue in the order that it is visited
         """
-        return Queue()
+        post_order_result_Queue = Queue()
+        if self.root:
+
+            def post_order_helper(root):
+                if root:
+                    post_order_helper(root.left)
+                    post_order_helper(root.right)
+                    post_order_result_Queue.enqueue(root)
+
+            post_order_helper(self.root)
+
+        return post_order_result_Queue
 
     def by_level_traversal(self) -> Queue:
         """
-        TODO: Write this implementation
+        Traverses the tree by level
+        Adds each node to the queue in the order that it is visited
         """
-        return Queue()
+        by_level_order_result_Queue = Queue()
+        if self.root:
+            pass
+        return by_level_order_result_Queue
 
     def is_full(self) -> bool:
         """
@@ -341,9 +365,22 @@ class BST:
 
     def height(self) -> int:
         """
-        TODO: Write this implementation
+        Returns the height of the tree
+        Empty tree returns -1
         """
-        return -1
+        def height_helper(node):
+            if node is None:
+                return 0
+
+            left_height = height_helper(node.left)
+            right_height = height_helper(node.right)
+
+            if left_height > right_height:
+                return left_height + 1
+            else:
+                return right_height + 1
+
+        return (height_helper(self.root) - 1)
 
     def count_leaves(self) -> int:
         """
