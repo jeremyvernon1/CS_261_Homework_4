@@ -211,6 +211,7 @@ class BST:
                 child.right = parent
             # set left branch to new root+
             if self.root.left:
+                # if more than one subtree
                 if child.left:
                     child = child.left
                     child.right = parent
