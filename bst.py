@@ -207,8 +207,11 @@ class BST:
                 while child.left:
                     parent = child
                     child = child.left
-                parent.left = child.right
-                child.right = parent
+                if child.right:
+                     parent.left = child.right
+                else:
+                    parent.left = None
+                child.right = self.root.right
             # set left branch to new root+
             if self.root.left:
                 # if more than one subtree
@@ -565,6 +568,12 @@ if __name__ == '__main__':
     print(tree.remove_first(), tree)
     print(tree.remove_first(), tree)
     print(tree.remove_first(), tree)
+    print(tree.remove_first(), tree)
+
+    """ remove_first() example 4 """
+    print("\nPDF - method remove_first() example 3")
+    print("-------------------------------------")
+    tree = BST([-89384, -90720, -90720, -90720, -42889, -59010, -85154, -85956, -89384, -42889, -42889, -42889])
     print(tree.remove_first(), tree)
 
     """ Traversal methods example 1 """
