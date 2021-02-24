@@ -136,7 +136,7 @@ class BST:
             return
         # finds position and inserts new node
         current = self.root
-        while current is not None:
+        while current:
             # left
             if value < current.value:
                 if current.left is None:
@@ -204,9 +204,9 @@ class BST:
             # if grandchildren
             if child.left and \
                     (child.left.left or child.left.right):
-                while child.left:
-                    parent = child
-                    child = child.left
+                parent = child
+                child = child.left
+
                 if child.right:
                      parent.left = child.right
                 else:
@@ -219,7 +219,7 @@ class BST:
                     parent = child
                     child = child.left
                     parent.left = None
-                    child.right = parent
+                    child.right = self.root.right
                 child.left = self.root.left
             # set new root
             self.root = child
@@ -229,9 +229,13 @@ class BST:
         """
         Removes the first node that matches the given value
         """
+        if self.root.value == value:
+            self.remove_first()
+
         above_remove = self.root
+
+        # if left child is value to remove
         while above_remove:
-            # if left child is value to remove
             if above_remove.left and above_remove.left.value == value:
                 element_to_remove = above_remove.left
                 # if child to remove has no children
@@ -390,21 +394,70 @@ class BST:
 
     def is_full(self) -> bool:
         """
-        TODO: Write this implementation
+        Checks if the BST is full
         """
-        return True
+        def is_full_helper(node=self.root):
+            if node is None:
+                return True
+            if node.right is None and node.left is None:
+                return True
+            if node.right and node.left:
+                return is_full_helper(node.right) and is_full_helper(node.left)
+            return False
+
+        return is_full_helper()
 
     def is_complete(self) -> bool:
         """
-        TODO: Write this implementation
+        Checks if a BST is complete
         """
-        return True
+        # initializes search
+        size = self.size()
+        node = self.root
+        pos = 0
+
+        def is_complete_helper(size, pos, node=self.root):
+            # if empty
+            if node is None:
+                return True
+            # if element is not in line
+            if pos >= size:
+                return False
+            return is_complete_helper(size, (2 * pos + 1), node.left) and\
+                is_complete_helper(size, (2 * pos + 2), node.right)
+
+        return is_complete_helper(size, pos, node)
 
     def is_perfect(self) -> bool:
         """
-        TODO: Write this implementation
+        Checks if the BST is perfect
         """
-        return True
+        def find_level(node):
+            lowest = 0
+            while node:
+                lowest += 1
+                node = node.left
+            return lowest
+
+        def is_perfect_helper(node, lowest, level):
+            # if empty
+            if node is None:
+                return True
+            # if no children
+            if node.left is None and node.right is None:
+                return lowest == level + 1
+            # if one child
+            if node.left is None or node.right is None:
+                return False
+            return is_perfect_helper(node.left, lowest, level) and \
+                is_perfect_helper(node.right, lowest, level)
+
+        # initializes search
+        node = self.root
+        lowest = find_level(node)
+        level = 0
+
+        return is_perfect_helper(node, lowest, level)
 
     def size(self) -> int:
         """
@@ -415,7 +468,6 @@ class BST:
                 return 0
             else:
                 return (size_helper(node.left) + 1 + size_helper(node.right))
-            return size
 
         size = size_helper()
         return size
@@ -426,12 +478,15 @@ class BST:
         Empty tree returns -1
         """
         def height_helper(node):
+            # if empty
             if node is None:
                 return 0
 
+            # find left and right branch heights
             left_height = height_helper(node.left)
             right_height = height_helper(node.right)
 
+            # find the largest height
             if left_height > right_height:
                 return left_height + 1
             else:
@@ -441,17 +496,35 @@ class BST:
 
     def count_leaves(self) -> int:
         """
-        TODO: Write this implementation
+        Counts the number of leaves in the BST
         """
-        return 0
+        def count_leaves_helper(node):
+            # if empty
+            if node is None:
+                return 0
+            # if root, but no children
+            if node.left is None and node.right is None:
+                return 1
+            # count leaves
+            return count_leaves_helper(node.left) + count_leaves_helper(node.right)
+
+        return count_leaves_helper(self.root)
 
     def count_unique(self) -> int:
         """
-        TODO: Write this implementation
+        Counts the number of unique elements in the BST
         """
-        return 0
+        def count_u_helper(node=self.root):
+            if node is None:
+                return 0
+            else:
+                if node.right and node.value != node.right.value:
+                    return (count_u_helper(node.left) + 1 + count_u_helper(node.right))
+                else:
+                    return (count_u_helper(node.left) + count_u_helper(node.right))
 
-
+        size = count_u_helper()
+        return size
 
 # BASIC TESTING - PDF EXAMPLES
 
@@ -525,6 +598,13 @@ if __name__ == '__main__':
     print(tree.remove(20))
     print(tree)
 
+    """ remove() example 2.5 """
+    print("\nPDF - method remove() example 2")
+    print("-------------------------------")
+    tree = BST([0, 1, 2, 2, 3, 3, 3])
+    print(tree.remove(0))
+    print(tree)
+
     """ remove() example 3 """
     print("\nPDF - method remove() example 3")
     print("-------------------------------")
@@ -573,8 +653,10 @@ if __name__ == '__main__':
     """ remove_first() example 4 """
     print("\nPDF - method remove_first() example 3")
     print("-------------------------------------")
-    tree = BST([-89384, -90720, -90720, -90720, -42889, -59010, -85154, -85956, -89384, -42889, -42889, -42889])
+    tree = BST([ -89068, -72789, -82355, -89068, -89068, -82355, -82355, -71624, -72789, -71624])
+    print("Input:  -89068, -72789, -82355, -89068, -89068, -82355, -82355, -71624, -72789, -71624")
     print(tree.remove_first(), tree)
+    print("Expected    : TREE pre order  { -72789, -82355, -89068, -89068, -82355, -82355, -71624, -72789, -71624 }")
 
     """ Traversal methods example 1 """
     print("\nPDF - traversal methods example 1")
