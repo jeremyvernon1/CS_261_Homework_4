@@ -449,8 +449,8 @@ class BST:
             # if one child
             if node.left is None or node.right is None:
                 return False
-            return is_perfect_helper(node.left, lowest, level) and \
-                is_perfect_helper(node.right, lowest, level)
+            return is_perfect_helper(node.left, lowest, (level + 1)) and \
+                is_perfect_helper(node.right, lowest, (level + 1))
 
         # initializes search
         node = self.root
@@ -518,7 +518,8 @@ class BST:
             if node is None:
                 return 0
             else:
-                if node.right and node.value != node.right.value:
+                if (node.right and (node.value != node.right.value)) or \
+                        (node.right is None and node.left is None):
                     return (count_u_helper(node.left) + 1 + count_u_helper(node.right))
                 else:
                     return (count_u_helper(node.left) + count_u_helper(node.right))
