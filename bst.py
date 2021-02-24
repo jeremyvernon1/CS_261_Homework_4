@@ -209,9 +209,13 @@ class BST:
                     child = child.left
                 parent.left = child.right
                 child.right = parent
-            # if no left branch
+            # set left branch to new root+
             if self.root.left:
+                if child.left:
+                    child = child.left
+                    child.right = parent
                 child.left = self.root.left
+            # set new root
             self.root = child
             return True
 
