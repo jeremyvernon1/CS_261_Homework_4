@@ -229,6 +229,9 @@ class BST:
         """
         Removes the first node that matches the given value
         """
+        if self.root is None:
+            return False
+
         if self.root.value == value:
             self.remove_first()
 
@@ -517,15 +520,11 @@ class BST:
         def count_u_helper(node=self.root):
             if node is None:
                 return 0
-            else:
-                if (node.right and (node.value != node.right.value)) or \
-                        (node.right is None and node.left is None):
-                    return (count_u_helper(node.left) + 1 + count_u_helper(node.right))
-                else:
-                    return (count_u_helper(node.left) + count_u_helper(node.right))
+            if node.left is None and node.right is None:
+                return 1
+            return count_u_helper(node.left) + 1 + count_u_helper(node.right)
 
-        size = count_u_helper()
-        return size
+        return count_u_helper()
 
 # BASIC TESTING - PDF EXAMPLES
 
@@ -729,3 +728,16 @@ if __name__ == '__main__':
           tree.post_order_traversal(), tree.by_level_traversal(),
           sep='\n')
 
+    print("\ncount unique 1")
+    print("-----------------------")
+    tree = BST([10,5])
+    print("Input:", tree)
+    print("Code Result: ", tree.count_unique())
+    print("Expected: 2")
+
+    print("\ncount unique 2")
+    print("-----------------------")
+    tree = BST([10])
+    print("Input:", tree)
+    print("Code Result: ", tree.count_unique())
+    print("Expected: 1")
