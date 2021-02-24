@@ -213,7 +213,9 @@ class BST:
             if self.root.left:
                 # if more than one subtree
                 if child.left:
+                    parent = child
                     child = child.left
+                    parent.left = None
                     child.right = parent
                 child.left = self.root.left
             # set new root
@@ -544,6 +546,13 @@ if __name__ == '__main__':
     print("\nPDF - method remove_first() example 2")
     print("-------------------------------------")
     tree = BST([10, 20, 5, 15, 17, 7])
+    print(tree.remove_first())
+    print(tree)
+
+    """ remove_first() example 2.5 """
+    print("\nPDF - method remove_first() example 2")
+    print("-------------------------------------")
+    tree = BST([15, 5, 7, 20, 17])
     print(tree.remove_first())
     print(tree)
 
