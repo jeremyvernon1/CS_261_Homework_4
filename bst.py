@@ -188,21 +188,20 @@ class BST:
         if self.root is None:
             return False
 
-        # if no children
+        # if no branches
         if self.root.left is None and self.root.right is None:
             self.root = None
             return True
 
-        # if left child, but no right children
+        # if left branch, but no right branch
         if self.root.right is None:
             self.root = self.root.left
             return True
-        # if no left child or if both left and right children
+        # if no left branch or if both left and right branches
         else:
             child = self.root.right
             # if grandchildren
-            if child.left and \
-                    (child.left.left or child.left.right):
+            if child.left:
                 parent = child
                 child = child.left
 
@@ -213,12 +212,6 @@ class BST:
                 child.right = self.root.right
             # set left branch to new root+
             if self.root.left:
-                # if more than one subtree
-                if child.left:
-                    parent = child
-                    child = child.left
-                    parent.left = None
-                    child.right = self.root.right
                 child.left = self.root.left
             # set new root
             self.root = child
@@ -252,24 +245,18 @@ class BST:
                     above_remove.left = element_to_remove.left
                 # if child to remove has both left child and right child
                 else:
-                    # checks for more than one subtree
-                    if element_to_remove.left.left.left or\
-                        element_to_remove.left.left.right or\
-                        element_to_remove.left.right.left or\
-                        element_to_remove.left.right.right or\
-                        element_to_remove.right.left.left or\
-                        element_to_remove.right.left.right or\
-                        element_to_remove.right.right.left or\
-                        element_to_remove.right.right.right:
-                        # more than one subtree found
-                        replacement = element_to_remove.right.left
-                        element_to_remove.right.left = replacement.right
-                        replacement.right = element_to_remove.right
-                        replacement.left = element_to_remove.left
-                        above_remove.right = replacement
+                    # if grandchildren
+                    if element_to_remove.left.right:
+                        grandchild = element_to_remove.left.right
+                        while grandchild.right:
+                            grandchild = grandchild.right
+                        element_to_remove.left.right = grandchild.left
+                        grandchild.right = element_to_remove.right
+                        grandchild.left = element_to_remove.left
+                        above_remove.left = grandchild
                     else:
-                        replacement = element_to_remove.right
-                        above_remove.right = replacement
+                        element_to_remove.right.left = element_to_remove.left
+                        above_remove.left = element_to_remove.right
                 return True
 
             # if right child is value to remove
@@ -286,24 +273,18 @@ class BST:
                     above_remove.right = element_to_remove.left
                 # if child to remove has both left and right children
                 else:
-                    # checks for more than one subtree
-                    if element_to_remove.left.left.left or\
-                        element_to_remove.left.left.right or\
-                        element_to_remove.left.right.left or\
-                        element_to_remove.left.right.right or\
-                        element_to_remove.right.left.left or\
-                        element_to_remove.right.left.right or\
-                        element_to_remove.right.right.left or\
-                        element_to_remove.right.right.right:
-                        # more than one subtree found
-                        replacement = element_to_remove.right.left
-                        element_to_remove.right.left = replacement.right
-                        replacement.right = element_to_remove.right
-                        replacement.left = element_to_remove.left
-                        above_remove.right = replacement
+                    # if grandchildren:
+                    if element_to_remove.right.left:
+                        grandchild = element_to_remove.right.left
+                        while grandchild.left:
+                            grandchild = grandchild.left
+                        element_to_remove.right.left = grandchild.right
+                        grandchild.left = element_to_remove.left
+                        grandchild.right = element_to_remove.right
+                        above_remove.right = grandchild
                     else:
-                        replacement = element_to_remove.right
-                        above_remove.right = replacement
+                        element_to_remove.left = element_to_remove.right
+                        above_remove.right = element_to_remove.left
                 return True
 
             # continue down the tree
@@ -638,7 +619,7 @@ if __name__ == '__main__':
     print(tree)
 
     """ remove() example 2.5 """
-    print("\nPDF - method remove() example 2")
+    print("\nPDF - method remove() example 2.5")
     print("-------------------------------")
     tree = BST([0, 1, 2, 2, 3, 3, 3])
     print(tree.remove(0))
@@ -657,6 +638,15 @@ if __name__ == '__main__':
     print(tree.post_order_traversal())
     print(tree.by_level_traversal())
 
+    """ remove() example 4 """
+    print("\nPDF - method remove() example 4")
+    print("-------------------------------")
+    tree = BST([10, 7, -1, -7, -6, -1, -1])
+    print("Input:", tree)
+    print(tree.remove(-1))
+    print(tree)
+    print("Expected:  [10, 7, -1, -7, -6, -1]")
+
     """ remove_first() example 1 """
     print("\nPDF - method remove_first() example 1")
     print("-------------------------------------")
@@ -672,7 +662,7 @@ if __name__ == '__main__':
     print(tree)
 
     """ remove_first() example 2.5 """
-    print("\nPDF - method remove_first() example 2")
+    print("\nPDF - method remove_first() example 2.5")
     print("-------------------------------------")
     tree = BST([15, 5, 7, 20, 17])
     print(tree.remove_first())
