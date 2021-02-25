@@ -201,7 +201,8 @@ class BST:
         else:
             child = self.root.right
             # if grandchildren
-            if child.left:
+            if child.left and \
+                    (child.left.left or child.left.right):
                 parent = child
                 child = child.left
 
