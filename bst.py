@@ -193,7 +193,6 @@ class BST:
             self.root = None
             return True
 
-        parent = self.root
         # if left child, but no right children
         if self.root.right is None:
             self.root = self.root.left
@@ -234,6 +233,7 @@ class BST:
 
         if self.root.value == value:
             self.remove_first()
+            return True
 
         above_remove = self.root
 
@@ -517,14 +517,41 @@ class BST:
         """
         Counts the number of unique elements in the BST
         """
-        def count_u_helper(node=self.root):
-            if node is None:
-                return 0
-            if node.left is None and node.right is None:
-                return 1
-            return count_u_helper(node.left) + 1 + count_u_helper(node.right)
+        count_u_result_stack = Stack()
+        # performs an inorder traversal
+        if self.root:
 
-        return count_u_helper()
+            def count_u_helper(node=self.root):
+                if node:
+                    count_u_helper(node.left)
+                    # pushes the value of the last node onto a stack
+                    count_u_result_stack.push(node.value)
+                    count_u_helper(node.right)
+
+            count_u_helper(self.root)
+
+        # empty stack and compare the top value to the last value
+        count_u = 0
+        # if empty
+        if count_u_result_stack.is_empty():
+            return count_u
+        # initialize the last value
+        else:
+            count_u += 1
+            last_value = count_u_result_stack.top()
+            count_u_result_stack.pop()
+            # compare top value to the last value
+            while True:
+                # base condition
+                if count_u_result_stack.is_empty():
+                    return count_u
+                else:
+                    if count_u_result_stack.top() != last_value:
+                        count_u += 1
+                        last_value = count_u_result_stack.top()
+                    count_u_result_stack.pop()
+
+
 
 # BASIC TESTING - PDF EXAMPLES
 
