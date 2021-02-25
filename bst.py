@@ -252,18 +252,24 @@ class BST:
                     above_remove.left = element_to_remove.left
                 # if child to remove has both left child and right child
                 else:
-                    # if grandchildren
-                    if element_to_remove.left.right:
-                        grandchild = element_to_remove.left.right
-                        while grandchild.right:
-                            grandchild = grandchild.right
-                        element_to_remove.left.right = grandchild.left
-                        grandchild.right = element_to_remove.right
-                        grandchild.left = element_to_remove.left
-                        above_remove.left = grandchild
+                    # checks for more than one subtree
+                    if element_to_remove.left.left.left or\
+                        element_to_remove.left.left.right or\
+                        element_to_remove.left.right.left or\
+                        element_to_remove.left.right.right or\
+                        element_to_remove.right.left.left or\
+                        element_to_remove.right.left.right or\
+                        element_to_remove.right.right.left or\
+                        element_to_remove.right.right.right:
+                        # more than one subtree found
+                        replacement = element_to_remove.right.left
+                        element_to_remove.right.left = replacement.right
+                        replacement.right = element_to_remove.right
+                        replacement.left = element_to_remove.left
+                        above_remove.right = replacement
                     else:
-                        element_to_remove.right.left = element_to_remove.left
-                        above_remove.left = element_to_remove.right
+                        replacement = element_to_remove.right
+                        above_remove.right = replacement
                 return True
 
             # if right child is value to remove
@@ -280,18 +286,24 @@ class BST:
                     above_remove.right = element_to_remove.left
                 # if child to remove has both left and right children
                 else:
-                    # if grandchildren:
-                    if element_to_remove.right.left:
-                        grandchild = element_to_remove.right.left
-                        while grandchild.left:
-                            grandchild = grandchild.left
-                        element_to_remove.right.left = grandchild.right
-                        grandchild.left = element_to_remove.left
-                        grandchild.right = element_to_remove.right
-                        above_remove.right = grandchild
+                    # checks for more than one subtree
+                    if element_to_remove.left.left.left or\
+                        element_to_remove.left.left.right or\
+                        element_to_remove.left.right.left or\
+                        element_to_remove.left.right.right or\
+                        element_to_remove.right.left.left or\
+                        element_to_remove.right.left.right or\
+                        element_to_remove.right.right.left or\
+                        element_to_remove.right.right.right:
+                        # more than one subtree found
+                        replacement = element_to_remove.right.left
+                        element_to_remove.right.left = replacement.right
+                        replacement.right = element_to_remove.right
+                        replacement.left = element_to_remove.left
+                        above_remove.right = replacement
                     else:
-                        element_to_remove.left = element_to_remove.right
-                        above_remove.right = element_to_remove.left
+                        replacement = element_to_remove.right
+                        above_remove.right = replacement
                 return True
 
             # continue down the tree
